@@ -45,6 +45,19 @@ contact_elements = driver.find_element(By.XPATH, contact_x_path)
 contact_text = contact_elements.text
 print(contact_text)
 
+start_index = contact_text.find("Representative") + len("Representative")
+end_index = contact_text.find("Designation:")
+representative_info = contact_text[start_index:end_index].strip()
+representative_lines = representative_info.split('\n')
+last_name = representative_lines[-1].split()[-1]
+first_name = representative_info[:-len(last_name)]
+
+print("Last word:", last_name)
+print("First words:", first_name)
+
+
+
+input("Stop ..:")
 print("\n..........................")
 
 footer_address_xpath = "//div[@class='footer-address']"
