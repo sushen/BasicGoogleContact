@@ -1,14 +1,15 @@
 import time
-
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import pathlib
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from save_google_contact import SaveGoogleContact
 
 
 # chrome_options = Options()
+
 chrome_options = webdriver.ChromeOptions()
 # chrome_options.add_experimental_option("debuggerAddress", "localhost:8797")
 scriptDirectory = pathlib.Path().absolute()
@@ -35,7 +36,7 @@ service = Service(executable_path="C:\\Users\\user\\PycharmProjects\\BasicGoogle
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
 
-driver.get("https://basis.org.bd/company-profile/03-09-017")
+driver.get("https://basis.org.bd/company-profile/13-08-523")
 driver.implicitly_wait(10)
 time.sleep(1)
 
@@ -52,8 +53,19 @@ footer_address_text = footer_address_elements.text
 print(footer_address_text)
 
 input("Stop ..:")
-driver.get("https://contacts.google.com/")
-email_xpath = "//input[@id='identifierId']"
-driver.find_element(By.XPATH, email_xpath).send_keys("sushenbiswasaga")
+
+first_name = "Mr. Asikul Alam"
+last_name = "Khan"
+phone_number = "01757110099"
+phone_label = "Mobile"
+email = "ceo@splendorit.com"
+email_label = "Work"
+company = "Splendor IT"
+job_title = "CEO"
+website = "www.priyoshop.com"
+contact_group_id = "label/6715d2620c768d38"
+SaveGoogleContact().create_contact(first_name, last_name, phone_number, phone_label, email, email_label,
+                                   contact_group_id, company,
+                                   job_title, website)
 
 input("Stop ..:")
