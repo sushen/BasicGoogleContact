@@ -8,7 +8,7 @@ SCOPES = ['https://www.googleapis.com/auth/contacts']
 
 class SaveGoogleContact():
 
-    def create_contact(first_name, last_name, phone_number, phone_label, email, email_label, contact_group_id=None,
+    def create_contact(self, first_name, last_name, phone_number, phone_label, email, email_label, contact_group_id=None,
                        company=None, job_title=None, website=None):
         # Set up the OAuth 2.0 flow for user authorization
         flow = InstalledAppFlow.from_client_secrets_file(
