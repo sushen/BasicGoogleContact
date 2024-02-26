@@ -1,6 +1,7 @@
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+import json
 
 # Define the scopes for the Google Contacts API
 SCOPES = ['https://www.googleapis.com/auth/contacts']
@@ -26,6 +27,7 @@ class SaveGoogleContact():
                 label_ids.append(group['resourceName'])
         return label_ids
 
+
     def create_contact(self, first_name, last_name, phone_number, email, company=None,
                        job_title=None, website=None, labels=None):
         # Define the contact you want to create
@@ -47,20 +49,28 @@ class SaveGoogleContact():
                     "value": email,
                     "type": "work"
                 }
-            ]
+            ],
+            'memberships': []
         }
 
         # Add optional fields if provided
-        if company:
-            new_contact["organizations"] = [{"name": company}]
-        if job_title:
-            new_contact["organizations"][0]["title"] = job_title
+        if company or job_title:
+            new_contact["organizations"] = [{"name": company, "title": job_title}]
         if website:
             new_contact["urls"] = [{"value": website}]
+
+        # Add labels to memberships
         if labels:
-            label_ids = self.get_label_ids(labels)
-            label_memberships = [{"contactGroupMembership": {"contactGroupId": label_id}} for label_id in label_ids if label_id]
-            new_contact["memberships"] = label_memberships
+            for label in labels:
+                new_contact['memberships'].append({
+                    'contactGroupMembership': {
+                        'contactGroupResourceName': f'contactGroups/{label}'
+                    }
+                })
+
+        # Print out the request body
+        print("Request Body:")
+        print(json.dumps(new_contact, indent=4))
 
         # Create the contact
         created_contact = self.service.people().createContact(body=new_contact).execute()
@@ -70,13 +80,12 @@ class SaveGoogleContact():
 
 
 if __name__ == '__main__':
-    first_name = "Mr. Asikul Alam"
-    last_name = "Khan"
-    phone_number = "01757110099"
-    email = "ceo@splendorit.com"
-    company = "Splendor IT"
-    job_title = "CEO"
-    website = "www.priyoshop.com"
-    labels = ["BASIS"]  # Example labels
+    first_name = "Mr. Yeaser"
+    last_name = "Arafat"
+    phone_number = "01814652640"
+    email = "arafat@live-technologies.net"
+    company = "Live Media Ltd."
+    job_title = "Managing Director"
+    website = "live-mediabd.net"
     SaveGoogleContact().create_contact(first_name, last_name, phone_number, email, company,
-                                       job_title, website, labels)
+                                       job_title, website, labels=["BASIS"])
