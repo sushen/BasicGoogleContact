@@ -4,25 +4,6 @@ from selenium.webdriver.common.by import By
 from driver.driver import Driver
 from save_google_contact import SaveGoogleContact
 
-driver = Driver().driver
-website_url = "https://basis.org.bd/member-list"
-driver.get(website_url)
-driver.implicitly_wait(10)
-time.sleep(1)
-
-list_profile_xpath = "//div[@class='card card-body shadow-sm']//a[contains(.,'More Details')]"
-list_profile_elements = driver.find_elements(By.XPATH, list_profile_xpath)
-for element in list_profile_elements:
-    print(element.get_attribute("outerHTML"))
-    input("Stop..:")
-
-
-input("Stop..:")
-
-contact_x_path = "//div[@class='card-body pt-0']"
-contact_elements = driver.find_element(By.XPATH, contact_x_path)
-contact_text = contact_elements.text
-
 
 def first_name_and_last_name(text):
     start_index = text.find("Representative") + len("Representative")
@@ -56,9 +37,7 @@ def email(text):
     return email
 
 
-footer_address_xpath = "//div[@class='footer-address']"
-footer_address_elements = driver.find_element(By.XPATH, footer_address_xpath)
-footer_address_text = footer_address_elements.text
+
 
 
 def address(text):
@@ -83,17 +62,30 @@ def company(xpath="//div[@class='companyDetails']/h1"):
     return company
 
 
-while True:
+driver = Driver().driver
+with open("extracted_url.txt", "r") as file:
+    for line in file:
+        print(line.strip())
 
+        driver.get(line.strip())
+        input("Stop..:")
 
-    SaveGoogleContact(). \
-        create_contact(first_name=first_name_and_last_name(contact_text)[0],
-                       last_name=first_name_and_last_name(contact_text)[1],
-                       phone_number=phone(contact_text),
-                       email=email(contact_text),
-                       company=company(),
-                       job_title=designation(contact_text),
-                       website=website(footer_address_text),
-                       labels=["BASIS"])
+        contact_x_path = "//div[@class='card-body pt-0']"
+        contact_elements = driver.find_element(By.XPATH, contact_x_path)
+        contact_text = contact_elements.text
 
-    input("Stop..:")
+        footer_address_xpath = "//div[@class='footer-address']"
+        footer_address_elements = driver.find_element(By.XPATH, footer_address_xpath)
+        footer_address_text = footer_address_elements.text
+
+        SaveGoogleContact(). \
+            create_contact(first_name=first_name_and_last_name(contact_text)[0],
+                           last_name=first_name_and_last_name(contact_text)[1],
+                           phone_number=phone(contact_text),
+                           email=email(contact_text),
+                           company=company(),
+                           job_title=designation(contact_text),
+                           website=website(footer_address_text),
+                           labels=["BASIS"])
+
+        # input("Stop..:")
