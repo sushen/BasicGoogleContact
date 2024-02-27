@@ -1,3 +1,7 @@
+"""
+I Scrap 55 page, and I will start from there also.
+"""
+
 import time
 import re
 from selenium.webdriver.common.by import By
@@ -36,4 +40,6 @@ def save_profile_link():
         # input("Stop..:")
 
 
-save_profile_link()
+while True:
+    save_profile_link()
+    input("Next Page..:")
