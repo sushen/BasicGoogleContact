@@ -1,5 +1,7 @@
 import time
 import re
+
+import pyautogui
 from selenium.webdriver.common.by import By
 from driver.driver import Driver
 from save_google_contact import SaveGoogleContact
@@ -64,11 +66,11 @@ def company(xpath="//div[@class='companyDetails']/h1"):
 
 driver = Driver().driver
 with open("extracted_url.txt", "r") as file:
-    for line in file:
-        print(line.strip())
+    for index, line in enumerate(file):
+        print(f"{index}. {line.strip()}")
 
         driver.get(line.strip())
-        input("Stop..:")
+        # input("Stop..:")
 
         contact_x_path = "//div[@class='card-body pt-0']"
         contact_elements = driver.find_element(By.XPATH, contact_x_path)
@@ -87,5 +89,6 @@ with open("extracted_url.txt", "r") as file:
                            job_title=designation(contact_text),
                            website=website(footer_address_text),
                            labels=["BASIS"])
+
 
         # input("Stop..:")

@@ -1,23 +1,54 @@
 from pprint import pprint
-
+from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
-from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
 # Define the scopes for the Google Contacts API
 SCOPES = ['https://www.googleapis.com/auth/contacts']
 
 
-class SaveGoogleContact():
+class SaveGoogleContact:
 
     def __init__(self):
         self.service = self.build_service()
 
     def build_service(self):
-        flow = InstalledAppFlow.from_client_secrets_file(
-            'credentials.json', SCOPES)
-        creds = flow.run_local_server(port=0)
-        return build('people', 'v1', credentials=creds)
+        # Load saved refresh token
+        def load_refresh_token():
+            try:
+                with open("../refresh_token.txt", "r") as file:
+                    return file.read().strip()
+            except FileNotFoundError:
+                print("Refresh token file not found.")
+                return None
+
+        refresh_token = load_refresh_token()
+        if refresh_token is None:
+            print("Refresh token is missing or invalid.")
+            # Handle the error condition appropriately, such as exiting the program or prompting the user to provide the refresh token again.
+            exit(1)
+
+        # Use refresh token to obtain credentials
+        def get_credentials():
+            credentials = Credentials(
+                token=None,
+                refresh_token=refresh_token,
+                token_uri="https://oauth2.googleapis.com/token",
+                client_id="1052058814383-2s503ud9diredv3117t5m2foq9i0cift.apps.googleusercontent.com", # Your client ID
+                client_secret="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", # Your client secret
+                scopes=SCOPES
+            )
+            return credentials
+
+        # Obtain credentials
+        credentials = get_credentials()
+
+        # Refresh the credentials to obtain access token
+        credentials.refresh(Request())
+
+        # Build service with obtained access token
+        service = build('people', 'v1', credentials=credentials)
+        return service
 
     def get_label_ids(self, labels):
         # Fetch label IDs from Google Contacts API
@@ -72,13 +103,18 @@ class SaveGoogleContact():
 
 
 if __name__ == '__main__':
-    first_name = "Mr. Asikul Alam"
-    last_name = "Khan"
-    phone_number = "01757110099"
-    email = "ceo@splendorit.com"
-    company = "Splendor IT"
-    job_title = "CEO"
-    website = "www.priyoshop.com"
-    labels = ["BASIS"]  # Example labels
+    first_name = "Mango"
+    # first_name = input("First Name:")
+    last_name = "Hulio"
+    # last_name = input("Last Name:")
+    phone_number = "=8801725588360"
+    # phone_number = input("Phone Number:")
+    email = "hjjdacnnj@gmail.com"
+    # email = input("Email:")
+    company = "Masdog"
+    # company = input("Company:")
+    job_title = "Sexy"
+    # job_title = input("Job Title:")
+    website = input("Website:")
     SaveGoogleContact().create_contact(first_name, last_name, phone_number, email, company,
-                                       job_title, website, labels)
+                                       job_title, website, labels=["BASIS"])
