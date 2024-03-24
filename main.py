@@ -90,5 +90,4 @@ with open("extracted_url.txt", "r") as file:
                            website=website(footer_address_text),
                            labels=["BASIS"])
 
-
         # input("Stop..:")

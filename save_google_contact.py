@@ -23,13 +23,13 @@ class SaveGoogleContact:
         # Fetch label IDs from Google Contacts API
         label_ids = []
         results = self.service.contactGroups().list().execute()
-        print("Contact Groups:", results)
+        # print("Contact Groups:", results)
         for group in results.get('contactGroups', []):
-            print("Group:", group)
+            # print("Group:", group)
             if group['name'] in labels:
-                print("Label Found:", group['name'])
+                # print("Label Found:", group['name'])
                 label_ids.append(group['resourceName'])
-        print("Label IDs:", label_ids)
+        # print("Label IDs:", label_ids)
         return label_ids
 
     def create_contact(self, first_name, last_name, phone_number, email, company=None,
@@ -75,7 +75,7 @@ class SaveGoogleContact:
         created_contact = self.service.people().createContact(body=new_contact).execute()
 
         print("Contact created successfully:")
-        pprint(created_contact)
+        # pprint(created_contact)
 
 
 if __name__ == '__main__':
@@ -87,5 +87,6 @@ if __name__ == '__main__':
     job_title = "CEO"
     website = "www.priyoshop.com"
     labels = ["BASIS", "basis"]  # Example labels
-    SaveGoogleContact().create_contact(first_name, last_name, phone_number, email, company,
+    for i in range(10):
+        SaveGoogleContact().create_contact(first_name, last_name, phone_number, email, company,
                                        job_title, website, labels)
