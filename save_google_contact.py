@@ -8,7 +8,7 @@ from googleapiclient.discovery import build
 SCOPES = ['https://www.googleapis.com/auth/contacts']
 
 
-class SaveGoogleContact():
+class SaveGoogleContact:
 
     def __init__(self):
         self.service = self.build_service()
@@ -23,9 +23,13 @@ class SaveGoogleContact():
         # Fetch label IDs from Google Contacts API
         label_ids = []
         results = self.service.contactGroups().list().execute()
+        print("Contact Groups:", results)
         for group in results.get('contactGroups', []):
+            print("Group:", group)
             if group['name'] in labels:
+                print("Label Found:", group['name'])
                 label_ids.append(group['resourceName'])
+        print("Label IDs:", label_ids)
         return label_ids
 
     def create_contact(self, first_name, last_name, phone_number, email, company=None,
@@ -56,12 +60,15 @@ class SaveGoogleContact():
         if company:
             new_contact["organizations"] = [{"name": company}]
         if job_title:
+            if "organizations" not in new_contact:
+                new_contact["organizations"] = [{}]
             new_contact["organizations"][0]["title"] = job_title
         if website:
             new_contact["urls"] = [{"value": website}]
         if labels:
             label_ids = self.get_label_ids(labels)
-            label_memberships = [{"contactGroupMembership": {"contactGroupId": label_id}} for label_id in label_ids if label_id]
+            label_memberships = [{"contactGroupMembership": {"contactGroupResourceName": label_id}} for label_id in
+                                 label_ids if label_id]
             new_contact["memberships"] = label_memberships
 
         # Create the contact
@@ -79,6 +86,6 @@ if __name__ == '__main__':
     company = "Splendor IT"
     job_title = "CEO"
     website = "www.priyoshop.com"
-    labels = ["BASIS"]  # Example labels
+    labels = ["BASIS", "basis"]  # Example labels
     SaveGoogleContact().create_contact(first_name, last_name, phone_number, email, company,
                                        job_title, website, labels)
