@@ -1,3 +1,4 @@
+import json
 from pprint import pprint
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -79,31 +80,38 @@ class SaveGoogleContact:
         print("Contact created successfully:")
         pprint(created_contact)
 
+    # contacts = [
+    #     {
+    #         "first_name": "Mr. Asikul Alam",
+    #         "last_name": "Khan",
+    #         "phone_number": "01757110099",
+    #         "email": "ceo@splendorit.com",
+    #         "company": "Splendor IT",
+    #         "job_title": "CEO",
+    #         "website": "www.priyoshop.com",
+    #         "labels": ["BASIS"]
+    #     },
+    #     {
+    #         "first_name": "Mr. forhad Alam",
+    #         "last_name": "Khan",
+    #         "phone_number": "01703088981",
+    #         "email": "forhad1822@gmail.com",
+    #         "company": "Daily Codings",
+    #         "job_title": "CEO",
+    #         "website": "www.dailycodings.com",
+    #         "labels": ["basis"]
+    #     },
+    # ]
+
 
 if __name__ == '__main__':
-    contacts = [
-        {
-            "first_name": "Mr. Asikul Alam",
-            "last_name": "Khan",
-            "phone_number": "01757110099",
-            "email": "ceo@splendorit.com",
-            "company": "Splendor IT",
-            "job_title": "CEO",
-            "website": "www.priyoshop.com",
-            "labels": ["BASIS"]
-        },
-        {
-            "first_name": "Mr. forhad Alam",
-            "last_name": "Khan",
-            "phone_number": "01703088981",
-            "email": "forhad1822@gmail.com",
-            "company": "Daily Codings",
-            "job_title": "CEO",
-            "website": "www.dailycodings.com",
-            "labels": ["basis"]
-        },
-    ]
+    with open("contact_info.json", "r") as file:
+        data = json.load(file)
 
+    # Create an instance of SaveGoogleContact
     contact_saver = SaveGoogleContact()
-    for contact in contacts:
+
+    # Iterate over the list of contacts
+    for contact in data:
+        # Pass each contact dictionary as keyword arguments to create_contact
         contact_saver.create_contact(**contact)
