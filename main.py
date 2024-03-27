@@ -1,3 +1,4 @@
+import fileinput
 import time
 import re
 
@@ -38,9 +39,6 @@ def email(text):
     return email
 
 
-
-
-
 def address(text):
     start_index = text.find("ADDRESS") + len("ADDRESS")
     # TODO: I have to work with Address
@@ -64,12 +62,24 @@ def company(xpath="//div[@class='companyDetails']/h1"):
 
 
 driver = Driver().driver
-with open("extracted_url.txt", "r") as file:
-    for index, line in enumerate(file):
-        print(f"{index}. {line.strip()}")
 
-        driver.get(line.strip())
-        # input("Stop..:")
+# Read lines already processed from done_collect_data.txt
+processed_lines = set()
+with open("done_collect_data.txt", "r") as done_file:
+    for line in done_file:
+        processed_lines.add(line.strip())
+
+# Process lines from extracted_url.txt if they are not in done_collect_data.txt
+with open("extracted_url.txt", "r") as input_file, open("done_collect_data.txt", "a") as output_file:
+    for index, line in enumerate(input_file, start=1):
+        line = line.strip()
+        if line in processed_lines:
+            print(f"Skipping line {index} as it is already processed.")
+            continue
+
+        print(f"{index}. {line}")
+
+        driver.get(line)
 
         contact_x_path = "//div[@class='card-body pt-0']"
         contact_elements = driver.find_element(By.XPATH, contact_x_path)
@@ -79,14 +89,18 @@ with open("extracted_url.txt", "r") as file:
         footer_address_elements = driver.find_element(By.XPATH, footer_address_xpath)
         footer_address_text = footer_address_elements.text
 
-        SaveGoogleContact(). \
-            create_contact(first_name=first_name_and_last_name(contact_text)[0],
-                           last_name=first_name_and_last_name(contact_text)[1],
-                           phone_number=phone(contact_text),
-                           email=email(contact_text),
-                           company=company(),
-                           job_title=designation(contact_text),
-                           website=website(footer_address_text),
-                           labels=["BASIS"])
+        SaveGoogleContact().create_contact(
+            first_name=first_name_and_last_name(contact_text)[0],
+            last_name=first_name_and_last_name(contact_text)[1],
+            phone_number=phone(contact_text),
+            email=email(contact_text),
+            company=company(),
+            job_title=designation(contact_text),
+            website=website(footer_address_text),
+            labels=["BASIS"]
+        )
 
-        # input("Stop..:")
+        output_file.write(line + "\n")
+
+# Close the webdriver
+driver.quit()
