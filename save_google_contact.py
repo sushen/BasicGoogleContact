@@ -80,33 +80,13 @@ class SaveGoogleContact:
         print("Contact created successfully:")
         pprint(created_contact)
 
-    # contacts = [
-    #     {
-    #         "first_name": "Mr. Asikul Alam",
-    #         "last_name": "Khan",
-    #         "phone_number": "01757110099",
-    #         "email": "ceo@splendorit.com",
-    #         "company": "Splendor IT",
-    #         "job_title": "CEO",
-    #         "website": "www.priyoshop.com",
-    #         "labels": ["BASIS"]
-    #     },
-    #     {
-    #         "first_name": "Mr. forhad Alam",
-    #         "last_name": "Khan",
-    #         "phone_number": "01703088981",
-    #         "email": "forhad1822@gmail.com",
-    #         "company": "Daily Codings",
-    #         "job_title": "CEO",
-    #         "website": "www.dailycodings.com",
-    #         "labels": ["basis"]
-    #     },
-    # ]
-
 
 if __name__ == '__main__':
     with open("contact_info.json", "r") as file:
         data = json.load(file)
+        print("Number of contacts:", len(data))
+        print(json.dumps(data, indent=4))
+        input("Press Enter to Save in Google Contact:")
 
     # Create an instance of SaveGoogleContact
     contact_saver = SaveGoogleContact()
