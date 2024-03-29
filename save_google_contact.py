@@ -96,7 +96,7 @@ if __name__ == '__main__':
         return data[start:end]
 
     contact_info = read_contact_info('contact_info.json')
-    data = get_contacts(contact_info, 400, 600)
+    data = get_contacts(contact_info, 905, 1000)
     print("200 contacts:")
 
     contact_saver = SaveGoogleContact()
