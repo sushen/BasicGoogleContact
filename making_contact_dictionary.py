@@ -107,7 +107,7 @@ class ContactProcessor:
                         json.dump(data, file)
 
                 output_file.write(line + "\n")
-                input("Next..:")
+                # input("Next..:")
 
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 import json
+import time
 from pprint import pprint
 from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -23,13 +24,13 @@ class SaveGoogleContact:
         # Fetch label IDs from Google Contacts API
         label_ids = []
         results = self.service.contactGroups().list().execute()
-        print("Contact Groups:", results)
+        # print("Contact Groups:", results)
         for group in results.get('contactGroups', []):
-            print("Group:", group)
+            # print("Group:", group)
             if group['name'] in labels:
-                print("Label Found:", group['name'])
+                # print("Label Found:", group['name'])
                 label_ids.append(group['resourceName'])
-        print("Label IDs:", label_ids)
+        # print("Label IDs:", label_ids)
         return label_ids
 
     def create_contact(self, first_name, last_name, phone_number, email, company=None,
@@ -78,20 +79,34 @@ class SaveGoogleContact:
         created_contact = self.service.people().createContact(body=new_contact).execute()
 
         print("Contact created successfully:")
-        pprint(created_contact)
+        # pprint(created_contact)
 
 
 if __name__ == '__main__':
-    with open("contact_info.json", "r") as file:
-        data = json.load(file)
-        print("Number of contacts:", len(data))
-        print(json.dumps(data, indent=4))
-        input("Press Enter to Save in Google Contact:")
+    # Time Counting
+    start_time = time.time()
+    print("This Script Started " + time.ctime())
 
-    # Create an instance of SaveGoogleContact
+    def read_contact_info(filename):
+        with open(filename, 'r') as file:
+            data = json.load(file)
+        return data
+
+    def get_contacts(data, start, end):
+        return data[start:end]
+
+    contact_info = read_contact_info('contact_info.json')
+    data = get_contacts(contact_info, 400, 600)
+    print("200 contacts:")
+
     contact_saver = SaveGoogleContact()
 
-    # Iterate over the list of contacts
-    for contact in data:
-        # Pass each contact dictionary as keyword arguments to create_contact
+    for index, contact in enumerate(data):
+        print(f"{index} : {contact}")
         contact_saver.create_contact(**contact)
+
+        # Time Counting
+        end_time = time.time()
+        current_time = end_time - start_time
+        print(current_time)
+        print(f"This Script Running {current_time/60} minutes. Time: {time.ctime()}\n")
